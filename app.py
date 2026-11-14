@@ -46,7 +46,7 @@ def require_login():
 # 1. Home API
 @app.route("/")
 def home():
-    return "University ERP Backend is Running!"
+    return redirect("/admin")
 
 
 # 2. View All Students (API)
