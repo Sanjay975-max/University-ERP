@@ -1,8 +1,46 @@
 
-from flask import Flask, jsonify, request, render_template, redirect
+from flask import Flask, jsonify, request, render_template, redirect, session
+import os
+from werkzeug.security import check_password_hash
 from database import get_db_connection
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY")
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax", SESSION_COOKIE_SECURE=os.environ.get("COOKIE_SECURE", "false").lower() == "true")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        username = os.environ.get("APP_USERNAME")
+        password_hash = os.environ.get("APP_PASSWORD_HASH")
+
+        if not username or not password_hash or not app.secret_key:
+            error = "Login is not configured. Contact the administrator."
+        elif request.form.get("username") == username and check_password_hash(
+            password_hash, request.form.get("password", "")
+        ):
+            session["logged_in"] = True
+            return redirect("/admin")
+        else:
+            error = "Invalid username or password."
+
+    return render_template("login.html", error=error)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
+
+@app.before_request
+def require_login():
+    if request.endpoint in ("login", "logout", "static"):
+        return None
+    if not session.get("logged_in"):
+        return redirect("/login")
 
 
 # 1. Home API
