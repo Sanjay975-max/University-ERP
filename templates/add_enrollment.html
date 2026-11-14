@@ -1,0 +1,209 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Enrollment | University ERP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .enrollment-page {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .enrollment-card {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            border: 1px solid #e5eaf2;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .enrollment-header {
+            margin-bottom: 28px;
+        }
+
+        .enrollment-header h1 {
+            color: #172554;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .enrollment-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .enrollment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .enrollment-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .enrollment-field label {
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .enrollment-field input,
+        .enrollment-field select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .enrollment-field input:focus,
+        .enrollment-field select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        .enrollment-field select {
+            cursor: pointer;
+        }
+
+        .enrollment-submit {
+            margin-top: 5px;
+            padding: 13px 24px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .enrollment-submit:hover {
+            background: #3730a3;
+        }
+
+        .enrollment-back {
+            display: inline-block;
+            margin-top: 22px;
+            text-decoration: none;
+            color: #4338ca;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .enrollment-back:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .enrollment-card {
+                padding: 22px;
+            }
+
+            .enrollment-header h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="enrollment-page">
+
+    <div class="enrollment-card">
+
+        <div class="enrollment-header">
+            <h1>Add New Enrollment</h1>
+            <p>Register a student for a course offering.</p>
+        </div>
+
+        <form method="POST"
+              action="/add_enrollment"
+              class="enrollment-form">
+
+            <div class="enrollment-field">
+                <label>Select Student</label>
+
+                <select name="student_id" required>
+                    <option value="">Select Student</option>
+
+                    {% for student in students %}
+                    <option value="{{ student.student_id }}">
+                        {{ student.admission_no }} - {{ student.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="enrollment-field">
+                <label>Select Course Offering</label>
+
+                <select name="offering_id" required>
+                    <option value="">Select Course</option>
+
+                    {% for offering in offerings %}
+                    <option value="{{ offering.offering_id }}">
+                        {{ offering.course_code }} - {{ offering.course_name }}
+                        | Semester {{ offering.semester_number }}
+                        | {{ offering.academic_year }}
+                        | Section {{ offering.section }}
+                        | {{ offering.faculty_name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="enrollment-field">
+                <label>Enrollment Date</label>
+
+                <input type="date"
+                       name="enrollment_date"
+                       required>
+            </div>
+
+            <div class="enrollment-field">
+                <label>Enrollment Status</label>
+
+                <select name="status" required>
+                    <option value="Enrolled">Enrolled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Withdrawn">Withdrawn</option>
+                </select>
+            </div>
+
+            <button type="submit" class="enrollment-submit">
+                Add Enrollment
+            </button>
+
+        </form>
+
+        <a href="/manage_enrollments" class="enrollment-back">
+            ← Back to Enrollments
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+```

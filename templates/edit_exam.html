@@ -1,0 +1,212 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Examination - University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .exam-form-container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 35px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .form-heading {
+            margin-bottom: 28px;
+        }
+
+        .form-heading h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .form-heading h2 {
+            color: #3730a3;
+            margin-bottom: 8px;
+        }
+
+        .form-heading p {
+            color: #64748b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #3730a3;
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 22px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .exam-form-container {
+                margin: 20px 12px;
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="exam-form-container">
+
+        <div class="form-heading">
+            <h1>University ERP</h1>
+            <h2>Edit Examination</h2>
+            <p>Update the examination details below.</p>
+        </div>
+
+        <form method="POST">
+
+            <div class="form-group">
+                <label>Select Course Offering</label>
+
+                <select name="offering_id" required>
+
+                    {% for offering in offerings %}
+
+                    <option value="{{ offering.offering_id }}"
+                        {% if offering.offering_id == exam.offering_id %}selected{% endif %}>
+
+                        {{ offering.course_code }} -
+                        {{ offering.course_name }}
+                        (Semester {{ offering.semester_number }},
+                        {{ offering.academic_year }},
+                        Section {{ offering.section }})
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Examination Name</label>
+
+                <input type="text"
+                       name="exam_name"
+                       value="{{ exam.exam_name }}"
+                       maxlength="100"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Examination Type</label>
+
+                <select name="exam_type" required>
+
+                    {% for exam_type in [
+                        'Internal',
+                        'External',
+                        'Practical',
+                        'Mid Semester',
+                        'End Semester'
+                    ] %}
+
+                    <option value="{{ exam_type }}"
+                        {% if exam.exam_type == exam_type %}selected{% endif %}>
+                        {{ exam_type }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Examination Date</label>
+
+                <input type="date"
+                       name="exam_date"
+                       value="{{ exam.exam_date.strftime('%Y-%m-%d') if exam.exam_date else '' }}">
+            </div>
+
+            <div class="form-group">
+                <label>Maximum Marks</label>
+
+                <input type="number"
+                       name="max_marks"
+                       value="{{ exam.max_marks }}"
+                       min="0.01"
+                       max="9999.99"
+                       step="0.01"
+                       required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Update Examination
+            </button>
+
+        </form>
+
+        <a href="/manage_exams" class="back-link">
+            ← Back to Examination List
+        </a>
+
+    </div>
+
+</body>
+</html>
+```

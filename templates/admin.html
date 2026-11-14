@@ -1,0 +1,883 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>University ERP | Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
+            --navy: #172554;
+            --text: #1e293b;
+            --muted: #64748b;
+            --background: #f5f7fc;
+            --white: #ffffff;
+            --border: #e8edf5;
+            --shadow: 0 8px 25px rgba(15, 23, 42, 0.045);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 25px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* MAIN LAYOUT */
+
+        .erp-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 255px;
+            background: var(--navy);
+            color: white;
+            padding: 28px 17px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 800;
+            padding: 0 12px 27px;
+            border-bottom: 1px solid rgba(255,255,255,0.13);
+            letter-spacing: -0.5px;
+        }
+
+        .brand span {
+            color: #a5b4fc;
+        }
+
+        .sidebar-heading {
+            color: #a5b4fc;
+            font-size: 10px;
+            font-weight: 800;
+            margin: 27px 12px 10px;
+            letter-spacing: 1.5px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: #dbeafe;
+            padding: 11px 12px;
+            border-radius: 9px;
+            margin: 4px 0;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: 0.2s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(129, 140, 248, 0.20);
+            color: white;
+        }
+
+        .sidebar a.active {
+            border-left: 3px solid #a5b4fc;
+            padding-left: 9px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px 35px;
+        }
+
+        /* TOPBAR */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            background: var(--white);
+            padding: 17px 23px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .topbar h2 {
+            margin: 0;
+            text-align: left;
+            color: var(--navy);
+            font-size: 19px;
+            font-weight: 750;
+        }
+
+        .topbar small {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--primary-light);
+            padding: 10px 15px;
+            border-radius: 30px;
+            white-space: nowrap;
+        }
+
+        .profile-icon {
+            width: 29px;
+            height: 29px;
+            display: grid;
+            place-items: center;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* WELCOME SECTION */
+
+        .welcome {
+            margin-bottom: 28px;
+        }
+
+        .welcome h1 {
+            color: var(--navy);
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .welcome p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .welcome-tag {
+            display: inline-block;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 13px;
+        }
+
+        /* STATISTICS */
+
+        .section-heading {
+            color: var(--navy);
+            font-size: 18px;
+            font-weight: 750;
+            margin-bottom: 17px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 21px;
+            border-radius: 13px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: 0.2s ease;
+            min-width: 0;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 39px;
+            height: 39px;
+            display: grid;
+            place-items: center;
+            background: var(--primary-light);
+            border-radius: 11px;
+            font-size: 19px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .stat-card h3 {
+            color: var(--navy);
+            font-size: 29px;
+            font-weight: 800;
+            text-align: left;
+            margin: 0;
+        }
+
+        /* CONTENT SECTIONS */
+
+        .section {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            scroll-margin-top: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            color: var(--navy);
+            font-size: 17px;
+            font-weight: 750;
+            text-align: left;
+            margin: 0;
+        }
+
+        .section-header span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* ACTION CARDS */
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 13px;
+        }
+
+        .action-grid a {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-height: 58px;
+            padding: 13px 15px;
+            background: #f8faff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #3730a3;
+            font-size: 13px;
+            font-weight: 650;
+            transition: 0.2s ease;
+        }
+
+        .action-grid a:hover {
+            background: var(--primary-light);
+            border-color: #c7d2fe;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            background: white;
+            border-radius: 8px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* QUICK ACTIONS */
+
+        .quick-actions {
+            background: linear-gradient(120deg, #eef2ff, #f8faff);
+            border: 1px solid #dfe5ff;
+        }
+
+        .quick-actions .action-grid a {
+            background: white;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 18px 10px;
+            margin-top: 10px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .action-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .main-content {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .erp-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                max-height: none;
+                padding: 20px 16px;
+            }
+
+            .brand {
+                padding-bottom: 17px;
+            }
+
+            .sidebar-heading {
+                margin-top: 17px;
+            }
+
+            .sidebar a {
+                display: inline-flex;
+                margin: 3px;
+            }
+
+            .main-content {
+                padding: 18px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .topbar {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .main-content {
+                padding: 13px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-card h3 {
+                font-size: 24px;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 17px;
+            }
+
+            .topbar h2 {
+                font-size: 16px;
+            }
+
+            .admin-profile {
+                padding: 8px 11px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="erp-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            University <span>ERP</span>
+        </div>
+
+        <p class="sidebar-heading">MAIN MENU</p>
+        <a href="/admin" class="active">🏠 Dashboard</a>
+
+        <p class="sidebar-heading">ACADEMIC MANAGEMENT</p>
+        <a href="/manage_students">👨‍🎓 Students</a>
+        <a href="/manage_departments">🏢 Departments</a>
+        <a href="/manage_faculty">👨‍🏫 Faculty</a>
+        <a href="/manage_courses">📚 Courses</a>
+        <a href="/manage_enrollments">📝 Enrollments</a>
+        <a href="/manage_timetable">🗓️ Timetable</a>
+
+        <p class="sidebar-heading">STUDENT SERVICES</p>
+        <a href="/manage_scholarships">🎓 Scholarships</a>
+        <a href="/manage_placements">💼 Placements</a>
+        <a href="/fee_dashboard">💰 Fee Dashboard</a>
+        <a href="/manage_fees">💳 Student Fees</a>
+        <a href="/payment_history">📋 Payment History</a>
+
+        <p class="sidebar-heading">ACADEMIC RECORDS</p>
+        <a href="/mark_attendance">✅ Attendance</a>
+        <a href="/attendance_report">📊 Attendance Report</a>
+        <a href="/manage_exams">📖 Examinations</a>
+        <a href="/manage_results">🏆 Results & Grades</a>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h2>Admin Dashboard</h2>
+                <small>University Management System</small>
+            </div>
+
+            <div class="admin-profile">
+                <span class="profile-icon">👤</span>
+                Administrator
+            </div>
+
+        </header>
+
+        <!-- WELCOME -->
+        <section class="welcome" id="overview">
+
+            <span class="welcome-tag">ADMIN CONTROL PANEL</span>
+
+            <h1>Welcome to University ERP</h1>
+
+            <p>
+                Manage students, academics, finances and university
+                operations from one centralized dashboard.
+            </p>
+
+        </section>
+
+        <!-- STATISTICS -->
+        <h2 class="section-heading">System Overview</h2>
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Total Students</p>
+                    <span class="stat-icon">👨‍🎓</span>
+                </div>
+                <h3>{{ student_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Departments</p>
+                    <span class="stat-icon">🏢</span>
+                </div>
+                <h3>{{ department_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Faculty Members</p>
+                    <span class="stat-icon">👨‍🏫</span>
+                </div>
+                <h3>{{ faculty_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Total Courses</p>
+                    <span class="stat-icon">📚</span>
+                </div>
+                <h3>{{ course_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Enrollments</p>
+                    <span class="stat-icon">📝</span>
+                </div>
+                <h3>{{ enrollment_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Fee Records</p>
+                    <span class="stat-icon">💰</span>
+                </div>
+                <h3>{{ fee_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Attendance Records</p>
+                    <span class="stat-icon">✅</span>
+                </div>
+                <h3>{{ attendance_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Examinations</p>
+                    <span class="stat-icon">📖</span>
+                </div>
+                <h3>{{ exam_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Student Results</p>
+                    <span class="stat-icon">🏆</span>
+                </div>
+                <h3>{{ result_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Scholarship Records</p>
+                    <span class="stat-icon">🎓</span>
+                </div>
+                <h3>{{ scholarship_count }}</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <p class="stat-label">Placement Records</p>
+                    <span class="stat-icon">💼</span>
+                </div>
+                <h3>{{ placement_count }}</h3>
+            </div>
+
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <section class="section quick-actions">
+
+            <div class="section-header">
+                <h2>⚡ Quick Actions</h2>
+                <span>Frequently used operations</span>
+            </div>
+
+            <div class="action-grid">
+
+                <a href="/register">
+                    <span class="action-icon">➕</span>
+                    Register Student
+                </a>
+
+                <a href="/add_department">
+                    <span class="action-icon">🏢</span>
+                    Add Department
+                </a>
+
+                <a href="/add_faculty">
+                    <span class="action-icon">👨‍🏫</span>
+                    Add Faculty
+                </a>
+
+                <a href="/add_course">
+                    <span class="action-icon">📚</span>
+                    Add Course
+                </a>
+
+                <a href="/add_enrollment">
+                    <span class="action-icon">📝</span>
+                    Add Enrollment
+                </a>
+
+                <a href="/add_timetable">
+                    <span class="action-icon">🗓️</span>
+                    Add Timetable
+                </a>
+
+                <a href="/add_scholarship">
+                    <span class="action-icon">🎓</span>
+                    Add Scholarship
+                </a>
+
+                <a href="/add_placement">
+                    <span class="action-icon">💼</span>
+                    Add Placement
+                </a>
+
+                <a href="/record_payment">
+                    <span class="action-icon">💳</span>
+                    Record Payment
+                </a>
+
+                <a href="/add_exam">
+                    <span class="action-icon">📖</span>
+                    Add Examination
+                </a>
+
+                <a href="/add_result">
+                    <span class="action-icon">🏆</span>
+                    Add Result
+                </a>
+
+            </div>
+        </section>
+
+        <!-- STUDENT MANAGEMENT -->
+        <section class="section" id="students">
+
+            <div class="section-header">
+                <h2>👨‍🎓 Student Management</h2>
+                <span>Student administration</span>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_students">
+                    <span class="action-icon">👥</span>
+                    View All Students
+                </a>
+
+                <a href="/register">
+                    <span class="action-icon">➕</span>
+                    Register New Student
+                </a>
+            </div>
+
+        </section>
+
+        <!-- DEPARTMENT MANAGEMENT -->
+        <section class="section" id="departments">
+
+            <div class="section-header">
+                <h2>🏢 Department Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_departments">View Departments</a>
+                <a href="/add_department">Add Department</a>
+            </div>
+
+        </section>
+
+        <!-- FACULTY MANAGEMENT -->
+        <section class="section" id="faculty">
+
+            <div class="section-header">
+                <h2>👨‍🏫 Faculty Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_faculty">View All Faculty</a>
+                <a href="/add_faculty">Add Faculty</a>
+            </div>
+
+        </section>
+
+        <!-- COURSE MANAGEMENT -->
+        <section class="section" id="courses">
+
+            <div class="section-header">
+                <h2>📚 Course Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_courses">View Courses</a>
+                <a href="/add_course">Add Course</a>
+            </div>
+
+        </section>
+
+        <!-- ENROLLMENT MANAGEMENT -->
+        <section class="section" id="enrollments">
+
+            <div class="section-header">
+                <h2>📝 Enrollment Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_enrollments">View Enrollments</a>
+                <a href="/add_enrollment">Add Enrollment</a>
+            </div>
+
+        </section>
+
+        <!-- TIMETABLE MANAGEMENT -->
+        <section class="section" id="timetable">
+
+            <div class="section-header">
+                <h2>🗓️ Timetable Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_timetable">View Timetable</a>
+                <a href="/add_timetable">Add Timetable</a>
+            </div>
+
+        </section>
+
+        <!-- SCHOLARSHIP MANAGEMENT -->
+        <section class="section" id="scholarships">
+
+            <div class="section-header">
+                <h2>🎓 Scholarship Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_scholarships">View Scholarships</a>
+                <a href="/add_scholarship">Add Scholarship</a>
+            </div>
+
+        </section>
+
+        <!-- PLACEMENT MANAGEMENT -->
+        <section class="section" id="placements">
+
+            <div class="section-header">
+                <h2>💼 Placement Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_placements">View Placements</a>
+                <a href="/add_placement">Add Placement</a>
+            </div>
+
+        </section>
+
+        <!-- FEE MANAGEMENT -->
+        <section class="section" id="fees">
+
+            <div class="section-header">
+                <h2>💰 Finance Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/fee_dashboard">Fee Dashboard</a>
+                <a href="/manage_fees">Manage Student Fees</a>
+                <a href="/record_payment">Record Payment</a>
+                <a href="/payment_history">Payment History</a>
+            </div>
+
+        </section>
+
+        <!-- ATTENDANCE MANAGEMENT -->
+        <section class="section" id="attendance">
+
+            <div class="section-header">
+                <h2>✅ Attendance Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/mark_attendance">Mark Attendance</a>
+                <a href="/attendance_report">Attendance Report</a>
+            </div>
+
+        </section>
+
+        <!-- EXAMINATION MANAGEMENT -->
+        <section class="section" id="examinations">
+
+            <div class="section-header">
+                <h2>📖 Examination Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_exams">Manage Examinations</a>
+                <a href="/add_exam">Add Examination</a>
+            </div>
+
+        </section>
+
+        <!-- RESULT MANAGEMENT -->
+        <section class="section" id="results">
+
+            <div class="section-header">
+                <h2>🏆 Result & Grade Management</h2>
+            </div>
+
+            <div class="action-grid">
+                <a href="/manage_results">View Results</a>
+                <a href="/add_result">Add Result</a>
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            University ERP Management System
+            <br>
+            Admin Control Panel
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

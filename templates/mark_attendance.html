@@ -1,0 +1,341 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mark Attendance - University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .attendance-container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #64748b;
+        }
+
+        .filter-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-group label {
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .field-group input,
+        .field-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            color: #1e293b;
+        }
+
+        .primary-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .primary-btn:hover {
+            background: #3730a3;
+        }
+
+        .student-section {
+            margin-top: 30px;
+        }
+
+        .student-section h2 {
+            color: #172554;
+            margin-bottom: 18px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .attendance-table {
+            width: 100%;
+            min-width: 700px;
+            border-collapse: collapse;
+        }
+
+        .attendance-table th {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 15px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .attendance-table td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .attendance-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .attendance-table select {
+            padding: 9px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #ffffff;
+            min-width: 120px;
+        }
+
+        .save-btn {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .save-btn:hover {
+            background: #15803d;
+        }
+
+        .empty-message {
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 650px) {
+            .attendance-container {
+                margin: 20px 12px;
+                padding: 18px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="attendance-container">
+
+        <div class="page-heading">
+            <h1>University ERP</h1>
+            <h2>Attendance Management</h2>
+            <p>Select a course and date to mark student attendance.</p>
+        </div>
+
+        <!-- Select Course and Date -->
+
+        <div class="filter-card">
+
+            <form method="GET" action="/mark_attendance">
+
+                <div class="filter-grid">
+
+                    <div class="field-group">
+                        <label>Select Course</label>
+
+                        <select name="offering_id" required>
+                            <option value="">-- Select Course --</option>
+
+                            {% for offering in offerings %}
+                            <option value="{{ offering.offering_id }}"
+                                {% if selected_offering_id|string == offering.offering_id|string %}selected{% endif %}>
+
+                                {{ offering.course_code }} - {{ offering.course_name }}
+                                (Semester {{ offering.semester_number }},
+                                {{ offering.academic_year }},
+                                Section {{ offering.section }})
+
+                            </option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Attendance Date</label>
+
+                        <input type="date"
+                               name="attendance_date"
+                               value="{{ attendance_date }}"
+                               required>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    Load Students
+                </button>
+
+            </form>
+
+        </div>
+
+        {% if students %}
+
+        <div class="student-section">
+
+            <h2>Student Attendance List</h2>
+
+            <form method="POST" action="/mark_attendance">
+
+                <input type="hidden"
+                       name="offering_id"
+                       value="{{ selected_offering_id }}">
+
+                <input type="hidden"
+                       name="attendance_date"
+                       value="{{ attendance_date }}">
+
+                <div class="table-wrapper">
+
+                    <table class="attendance-table">
+
+                        <thead>
+                            <tr>
+                                <th>Enrollment ID</th>
+                                <th>Admission Number</th>
+                                <th>Student Name</th>
+                                <th>Attendance Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for student in students %}
+
+                            <tr>
+
+                                <td>{{ student.enrollment_id }}</td>
+
+                                <td>{{ student.admission_no }}</td>
+
+                                <td>{{ student.name }}</td>
+
+                                <td>
+
+                                    <select name="status_{{ student.enrollment_id }}" required>
+
+                                        <option value="Present"
+                                            {% if student.attendance_status == 'Present' or not student.attendance_status %}selected{% endif %}>
+                                            Present
+                                        </option>
+
+                                        <option value="Absent"
+                                            {% if student.attendance_status == 'Absent' %}selected{% endif %}>
+                                            Absent
+                                        </option>
+
+                                        <option value="Late"
+                                            {% if student.attendance_status == 'Late' %}selected{% endif %}>
+                                            Late
+                                        </option>
+
+                                        <option value="Leave"
+                                            {% if student.attendance_status == 'Leave' %}selected{% endif %}>
+                                            Leave
+                                        </option>
+
+                                    </select>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <button type="submit" class="save-btn">
+                    Save Attendance
+                </button>
+
+            </form>
+
+        </div>
+
+        {% elif selected_offering_id and attendance_date %}
+
+            <p class="empty-message">
+                No students enrolled in this course.
+            </p>
+
+        {% endif %}
+
+        <a href="/admin" class="back-link">
+            ← Back to Admin Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>
+```

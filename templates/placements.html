@@ -1,0 +1,269 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Placement Management | University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .placement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .placement-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .placement-header p {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .placement-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .placement-actions a {
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .add-placement-btn {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .add-placement-btn:hover {
+            background: #4338ca;
+        }
+
+        .back-dashboard-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .back-dashboard-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .placement-table-card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .placement-table-card h3 {
+            margin-bottom: 20px;
+            color: #172554;
+        }
+
+        .placement-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .placement-table {
+            width: 100%;
+            min-width: 1250px;
+            border-collapse: collapse;
+        }
+
+        .placement-table th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 15px 12px;
+            text-align: left;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .placement-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .placement-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .placement-status-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .placement-status-form select {
+            min-width: 125px;
+            padding: 9px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: white;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .placement-status-form button {
+            padding: 9px 13px;
+            border: none;
+            border-radius: 7px;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .placement-status-form button:hover {
+            background: #4338ca;
+        }
+
+        .empty-placement {
+            text-align: center;
+            padding: 35px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .placement-table-card {
+                padding: 15px;
+            }
+
+            .placement-header {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <div class="placement-header">
+        <div>
+            <h1>University ERP</h1>
+            <h2>Placement Management</h2>
+            <p>Manage student placement records and update placement status.</p>
+        </div>
+
+        <div class="placement-actions">
+            <a href="/add_placement" class="add-placement-btn">
+                + Add Placement Record
+            </a>
+
+            <a href="/admin" class="back-dashboard-btn">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="placement-table-card">
+
+        <h3>All Placement Records</h3>
+
+        <div class="placement-table-wrapper">
+
+            <table class="placement-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Admission No.</th>
+                        <th>Student Name</th>
+                        <th>Company</th>
+                        <th>Job Role</th>
+                        <th>Package (LPA)</th>
+                        <th>Placement Date</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in placements %}
+
+                    <tr>
+                        <td>{{ item.placement_id }}</td>
+
+                        <td>{{ item.admission_no }}</td>
+
+                        <td>{{ item.student_name }}</td>
+
+                        <td>{{ item.company_name }}</td>
+
+                        <td>{{ item.job_role or 'Not Assigned' }}</td>
+
+                        <td>{{ item.package_lpa or 'Not Available' }}</td>
+
+                        <td>{{ item.placement_date or 'Not Set' }}</td>
+
+                        <td>{{ item.placement_status }}</td>
+
+                        <td>
+                            <form
+                                class="placement-status-form"
+                                action="/update_placement_status/{{ item.placement_id }}"
+                                method="POST">
+
+                                <select name="placement_status" required>
+
+                                    {% for status in ['Applied', 'Shortlisted', 'Interview', 'Selected', 'Joined', 'Rejected'] %}
+
+                                    <option value="{{ status }}"
+                                        {% if item.placement_status == status %}selected{% endif %}>
+                                        {{ status }}
+                                    </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                                <button type="submit">Update</button>
+
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="9" class="empty-placement">
+                            No placement records found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+```

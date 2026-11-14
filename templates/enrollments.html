@@ -1,0 +1,331 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Enrollment Management | University ERP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .enrollment-page {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .enrollment-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #e5eaf2;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .enrollment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .enrollment-header h1 {
+            color: #172554;
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .enrollment-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .enrollment-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .enrollment-actions a {
+            display: inline-block;
+            padding: 11px 17px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .add-enrollment-btn {
+            background: #4f46e5;
+            color: #ffffff;
+        }
+
+        .add-enrollment-btn:hover {
+            background: #3730a3;
+        }
+
+        .dashboard-btn {
+            background: #eef2ff;
+            color: #3730a3;
+        }
+
+        .dashboard-btn:hover {
+            background: #e0e7ff;
+        }
+
+        .enrollment-section-title {
+            color: #1e293b;
+            font-size: 19px;
+            margin: 25px 0 18px;
+        }
+
+        .enrollment-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e5eaf2;
+            border-radius: 10px;
+        }
+
+        .enrollment-table {
+            width: 100%;
+            min-width: 1250px;
+            border-collapse: collapse;
+        }
+
+        .enrollment-table th {
+            background: #f1f5f9;
+            color: #334155;
+            text-align: left;
+            padding: 15px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .enrollment-table td {
+            padding: 14px 12px;
+            border-top: 1px solid #e5eaf2;
+            color: #475569;
+            font-size: 13px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .enrollment-table tbody tr:hover {
+            background: #f8faff;
+        }
+
+        .enrollment-student {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .enrollment-course {
+            color: #3730a3;
+            font-weight: 600;
+        }
+
+        .enrollment-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .enrollment-edit {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 6px;
+            background: #eef2ff;
+            color: #3730a3;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .enrollment-edit:hover {
+            background: #e0e7ff;
+        }
+
+        .enrollment-delete {
+            padding: 7px 11px;
+            border: none;
+            border-radius: 6px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .enrollment-delete:hover {
+            background: #fecaca;
+        }
+
+        .enrollment-empty {
+            text-align: center;
+            padding: 35px 15px;
+            color: #64748b;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .enrollment-card {
+                padding: 20px;
+            }
+
+            .enrollment-header h1 {
+                font-size: 23px;
+            }
+
+            .enrollment-actions {
+                width: 100%;
+            }
+
+            .enrollment-actions a {
+                text-align: center;
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="enrollment-page">
+
+    <div class="enrollment-card">
+
+        <div class="enrollment-header">
+
+            <div>
+                <h1>Enrollment Management</h1>
+                <p>Manage student course enrollments and academic records.</p>
+            </div>
+
+            <div class="enrollment-actions">
+                <a href="/add_enrollment" class="add-enrollment-btn">
+                    + Add New Enrollment
+                </a>
+
+                <a href="/admin" class="dashboard-btn">
+                    Back to Dashboard
+                </a>
+            </div>
+
+        </div>
+
+        <h2 class="enrollment-section-title">All Enrollments</h2>
+
+        {% if enrollments %}
+
+        <div class="enrollment-table-wrapper">
+
+            <table class="enrollment-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Admission No.</th>
+                        <th>Student Name</th>
+                        <th>Course</th>
+                        <th>Semester</th>
+                        <th>Academic Year</th>
+                        <th>Section</th>
+                        <th>Faculty</th>
+                        <th>Enrollment Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for enrollment in enrollments %}
+
+                    <tr>
+                        <td>{{ enrollment.enrollment_id }}</td>
+
+                        <td>{{ enrollment.admission_no }}</td>
+
+                        <td>
+                            <span class="enrollment-student">
+                                {{ enrollment.student_name }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="enrollment-course">
+                                {{ enrollment.course_code }} - {{ enrollment.course_name }}
+                            </span>
+                        </td>
+
+                        <td>{{ enrollment.semester_number }}</td>
+
+                        <td>{{ enrollment.academic_year }}</td>
+
+                        <td>{{ enrollment.section }}</td>
+
+                        <td>{{ enrollment.faculty_name }}</td>
+
+                        <td>{{ enrollment.enrollment_date }}</td>
+
+                        <td>
+                            <span class="enrollment-status">
+                                {{ enrollment.status }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <a href="/edit_enrollment/{{ enrollment.enrollment_id }}"
+                               class="enrollment-edit">
+                                Edit
+                            </a>
+
+                            <form action="/delete_enrollment/{{ enrollment.enrollment_id }}"
+                                  method="POST"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('Are you sure you want to delete this enrollment?');">
+
+                                <button type="submit" class="enrollment-delete">
+                                    Delete
+                                </button>
+
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="enrollment-empty">
+            <h3>No Enrollments Found</h3>
+            <p>Click Add New Enrollment to create your first enrollment.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

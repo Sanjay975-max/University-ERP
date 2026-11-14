@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>University ERP - Student Registration</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 35px 18px;
+            min-height: 100vh;
+            background: #f3f6fc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #17233c;
+        }
+
+        .registration-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .registration-header {
+            margin-bottom: 25px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: #253b80;
+            color: white;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand-name {
+            font-size: 21px;
+            font-weight: 750;
+            color: #1c2d55;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            color: #8490a5;
+            margin-top: 3px;
+        }
+
+        .page-heading {
+            margin-bottom: 8px;
+            font-size: 29px;
+            font-weight: 750;
+            color: #172b52;
+        }
+
+        .page-description {
+            color: #78849a;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .registration-card {
+            background: #ffffff;
+            border: 1px solid #e5eaf3;
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 8px 30px rgba(30, 50, 90, 0.06);
+        }
+
+        .section-heading {
+            font-size: 17px;
+            font-weight: 700;
+            color: #263b68;
+            margin: 0 0 7px;
+        }
+
+        .section-description {
+            color: #8994a8;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .registration-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 21px 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 650;
+            color: #354563;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 46px;
+            padding: 0 13px;
+            border: 1px solid #dce3ef;
+            border-radius: 9px;
+            background: #fbfcff;
+            color: #273750;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #536fe0;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(83, 111, 224, 0.12);
+        }
+
+        .form-group input::placeholder {
+            color: #a5afbf;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 10px;
+            padding-top: 22px;
+            border-top: 1px solid #edf0f5;
+        }
+
+        .submit-btn {
+            min-width: 190px;
+            height: 46px;
+            border: none;
+            border-radius: 9px;
+            background: #304caa;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background: #243d91;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            color: #53637e;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: #f1f4fa;
+            color: #304caa;
+        }
+
+        #message {
+            grid-column: 1 / -1;
+            display: none;
+            margin: 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        #message.success {
+            display: block;
+            color: #167346;
+            background: #eaf8f0;
+            border: 1px solid #c9ebd6;
+        }
+
+        #message.error {
+            display: block;
+            color: #b42332;
+            background: #fff0f0;
+            border: 1px solid #f4d0d3;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 22px;
+            color: #9aa4b5;
+            font-size: 12px;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            .registration-card {
+                padding: 22px 17px;
+            }
+
+            .registration-form {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .page-heading {
+                font-size: 24px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+
+            .back-link {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="registration-wrapper">
+
+    <div class="registration-header">
+
+        <div class="brand">
+            <div class="brand-icon">U</div>
+
+            <div>
+                <div class="brand-name">University ERP</div>
+                <div class="brand-subtitle">University Management System</div>
+            </div>
+        </div>
+
+        <h1 class="page-heading">Student Registration</h1>
+
+        <p class="page-description">
+            Register a new student by entering the required academic
+            and personal information below.
+        </p>
+
+    </div>
+
+    <div class="registration-card">
+
+        <h2 class="section-heading">Student Information</h2>
+
+        <p class="section-description">
+            Please provide accurate details for student registration.
+        </p>
+
+        <form id="studentForm" class="registration-form">
+
+            <div class="form-group">
+                <label>Admission Number</label>
+                <input
+                    type="text"
+                    name="admission_no"
+                    placeholder="Enter admission number"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Student Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter student name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter email address"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input
+                    type="text"
+                    name="phone"
+                    placeholder="Enter phone number"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Gender</label>
+                <select name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input
+                    type="date"
+                    name="date_of_birth"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Admission Date</label>
+                <input
+                    type="date"
+                    name="admission_date"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Department ID</label>
+                <input
+                    type="number"
+                    name="department_id"
+                    placeholder="Enter department ID"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Current Semester</label>
+                <input
+                    type="number"
+                    name="current_semester"
+                    min="1"
+                    placeholder="Enter semester"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Student Status</label>
+                <select name="status" required>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit" class="submit-btn">
+                    Register Student
+                </button>
+
+                <a href="/admin" class="back-link">
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+            <p id="message"></p>
+
+        </form>
+
+    </div>
+
+    <div class="footer-note">
+        University ERP Management System
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("studentForm").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const form = this;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    data.department_id = Number(data.department_id);
+    data.current_semester = Number(data.current_semester);
+
+    const message = document.getElementById("message");
+    const submitButton = form.querySelector(".submit-btn");
+
+    message.className = "";
+    message.style.display = "block";
+    message.innerText = "Registering student...";
+
+    submitButton.disabled = true;
+    submitButton.innerText = "Registering...";
+
+    try {
+
+        const response = await fetch("/add_student", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+
+            message.className = "success";
+            message.innerText = result.message || "Student registered successfully!";
+
+            form.reset();
+
+        } else {
+
+            message.className = "error";
+            message.innerText = result.error || result.message || "Registration failed.";
+
+        }
+
+    } catch (error) {
+
+        message.className = "error";
+        message.innerText = "Server connection failed! Please try again.";
+
+    } finally {
+
+        submitButton.disabled = false;
+        submitButton.innerText = "Register Student";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

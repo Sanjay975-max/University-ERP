@@ -1,0 +1,180 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Enrollment | University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f4f7fc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .form-container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 35px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .form-container h1 {
+            color: #172554;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        .form-container label {
+            display: block;
+            margin: 18px 0 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-container input:focus,
+        .form-container select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        .form-container button {
+            width: 100%;
+            margin-top: 28px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #4f46e5;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background: #3730a3;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 22px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                margin: 20px 12px;
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <h1>Edit Enrollment</h1>
+    <p class="subtitle">Update student enrollment information.</p>
+
+    <form method="POST" action="/edit_enrollment/{{ enrollment.enrollment_id }}">
+
+        <label>Select Student</label>
+        <select name="student_id" required>
+
+            {% for student in students %}
+            <option value="{{ student.student_id }}"
+                {% if student.student_id == enrollment.student_id %}
+                    selected
+                {% endif %}>
+                {{ student.admission_no }} - {{ student.name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Select Course Offering</label>
+        <select name="offering_id" required>
+
+            {% for offering in offerings %}
+            <option value="{{ offering.offering_id }}"
+                {% if offering.offering_id == enrollment.offering_id %}
+                    selected
+                {% endif %}>
+                {{ offering.course_code }} - {{ offering.course_name }}
+                | Semester {{ offering.semester_number }}
+                | {{ offering.academic_year }}
+                | Section {{ offering.section }}
+                | {{ offering.faculty_name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Enrollment Date</label>
+        <input
+            type="date"
+            name="enrollment_date"
+            value="{{ enrollment.enrollment_date }}"
+            required
+        >
+
+        <label>Enrollment Status</label>
+        <select name="status" required>
+
+            <option value="Enrolled"
+                {% if enrollment.status == 'Enrolled' %}selected{% endif %}>
+                Enrolled
+            </option>
+
+            <option value="Completed"
+                {% if enrollment.status == 'Completed' %}selected{% endif %}>
+                Completed
+            </option>
+
+            <option value="Withdrawn"
+                {% if enrollment.status == 'Withdrawn' %}selected{% endif %}>
+                Withdrawn
+            </option>
+
+        </select>
+
+        <button type="submit">Update Enrollment</button>
+
+    </form>
+
+    <a href="/manage_enrollments" class="back-link">
+        ← Back to Enrollments
+    </a>
+
+</div>
+
+</body>
+</html>
+```

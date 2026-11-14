@@ -1,0 +1,256 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payment History | University ERP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .history-page {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .history-header h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .history-header h2 {
+            color: #334155;
+            font-size: 22px;
+        }
+
+        .history-header p {
+            color: #64748b;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .history-card {
+            background: #ffffff;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+        }
+
+        .history-card h3 {
+            color: #172554;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .history-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            min-width: 1050px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .history-table th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 15px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .history-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .history-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .payment-amount {
+            color: #15803d !important;
+            font-weight: 700;
+        }
+
+        .payment-method {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .transaction-id {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .history-footer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .history-footer a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .history-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .history-footer span {
+            color: #cbd5e1;
+        }
+
+        @media (max-width: 600px) {
+            .history-header h1 {
+                font-size: 25px;
+            }
+
+            .history-header h2 {
+                font-size: 19px;
+            }
+
+            .history-card {
+                padding: 15px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container history-page">
+
+        <div class="history-header">
+            <div>
+                <h1>University ERP</h1>
+                <h2>Payment History</h2>
+                <p>View all recorded student fee payments and transaction details.</p>
+            </div>
+        </div>
+
+        <div class="history-card">
+
+            <h3>All Payment Records</h3>
+
+            {% if payments %}
+
+            <div class="history-table-wrapper">
+
+                <table class="history-table">
+
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Invoice ID</th>
+                            <th>Admission No.</th>
+                            <th>Student Name</th>
+                            <th>Amount Paid</th>
+                            <th>Payment Date</th>
+                            <th>Payment Method</th>
+                            <th>Transaction ID</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for payment in payments %}
+
+                        <tr>
+                            <td>{{ payment.payment_id }}</td>
+
+                            <td>{{ payment.invoice_id }}</td>
+
+                            <td>{{ payment.admission_no }}</td>
+
+                            <td>{{ payment.student_name }}</td>
+
+                            <td class="payment-amount">
+                                ₹{{ "%.2f"|format(payment.amount_paid) }}
+                            </td>
+
+                            <td>{{ payment.payment_date }}</td>
+
+                            <td>
+                                <span class="payment-method">
+                                    {{ payment.payment_method or 'Not Set' }}
+                                </span>
+                            </td>
+
+                            <td class="transaction-id">
+                                {{ payment.transaction_id or 'Not Set' }}
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="history-empty">
+                No payment records found.
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="history-footer">
+
+            <a href="/manage_fees">← Back to Fees Management</a>
+
+            <span>|</span>
+
+            <a href="/admin">Dashboard</a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+```

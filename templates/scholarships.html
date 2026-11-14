@@ -1,0 +1,245 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scholarship Management | University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f4f7fc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 35px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            color: #334155;
+            margin: 22px 0;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .dashboard-links a {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 9px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .dashboard-links a:last-child {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .dashboard-links a:hover {
+            opacity: 0.88;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1050px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 15px 12px;
+            text-align: left;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #edf0f5;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        .status-select {
+            min-width: 125px;
+            padding: 9px;
+            border: 1px solid #dbe3ef;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #334155;
+            outline: none;
+        }
+
+        .update-btn {
+            margin-top: 8px;
+            padding: 9px 15px;
+            border: none;
+            border-radius: 7px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .update-btn:hover {
+            background: #3730a3;
+        }
+
+        .empty-state {
+            padding: 35px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-container {
+                margin: 15px 10px;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <h1>University ERP</h1>
+    <h2>Scholarship Management</h2>
+
+    <p class="subtitle">
+        Manage student scholarship applications, amounts and approval status.
+    </p>
+
+    <div class="dashboard-links">
+        <a href="/add_scholarship">+ Add Scholarship Application</a>
+        <a href="/admin">← Back to Dashboard</a>
+    </div>
+
+    <h2>All Scholarship Applications</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Admission No.</th>
+                    <th>Student Name</th>
+                    <th>Semester</th>
+                    <th>Scholarship Name</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Update Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in scholarships %}
+                <tr>
+
+                    <td>{{ item.scholarship_id }}</td>
+                    <td>{{ item.admission_no }}</td>
+                    <td>{{ item.student_name }}</td>
+                    <td>{{ item.semester_id }}</td>
+                    <td>{{ item.scholarship_name }}</td>
+                    <td>₹{{ item.amount }}</td>
+                    <td>{{ item.application_status }}</td>
+
+                    <td>
+                        <form
+                            action="/update_scholarship_status/{{ item.scholarship_id }}"
+                            method="POST">
+
+                            <select name="application_status"
+                                    class="status-select"
+                                    required>
+
+                                <option value="Pending"
+                                    {% if item.application_status == 'Pending' %}selected{% endif %}>
+                                    Pending
+                                </option>
+
+                                <option value="Approved"
+                                    {% if item.application_status == 'Approved' %}selected{% endif %}>
+                                    Approved
+                                </option>
+
+                                <option value="Rejected"
+                                    {% if item.application_status == 'Rejected' %}selected{% endif %}>
+                                    Rejected
+                                </option>
+
+                                <option value="Disbursed"
+                                    {% if item.application_status == 'Disbursed' %}selected{% endif %}>
+                                    Disbursed
+                                </option>
+
+                            </select>
+
+                            <button type="submit" class="update-btn">
+                                Update
+                            </button>
+
+                        </form>
+                    </td>
+
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        No scholarship applications found.
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+```

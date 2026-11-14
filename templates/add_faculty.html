@@ -1,0 +1,234 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Faculty | University ERP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .faculty-page {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .faculty-card {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+            border: 1px solid #e5eaf2;
+        }
+
+        .faculty-header {
+            margin-bottom: 25px;
+        }
+
+        .faculty-header h1 {
+            color: #172554;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .faculty-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .faculty-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .faculty-links a {
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .faculty-links a:hover {
+            background: #e0e7ff;
+        }
+
+        .faculty-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .faculty-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .faculty-field label {
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .faculty-field input,
+        .faculty-field select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .faculty-field input:focus,
+        .faculty-field select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        .faculty-error {
+            background: #fef2f2;
+            color: #b91c1c;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #fecaca;
+        }
+
+        .faculty-submit {
+            margin-top: 25px;
+            padding: 13px 24px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .faculty-submit:hover {
+            background: #3730a3;
+        }
+
+        @media (max-width: 600px) {
+            .faculty-card {
+                padding: 22px;
+            }
+
+            .faculty-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .faculty-header h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="faculty-page">
+
+    <div class="faculty-card">
+
+        <div class="faculty-header">
+            <h1>Add New Faculty</h1>
+            <p>Enter faculty information to create a new faculty record.</p>
+        </div>
+
+        <div class="faculty-links">
+            <a href="/manage_faculty">← View All Faculty</a>
+            <a href="/admin">Admin Dashboard</a>
+        </div>
+
+        {% if error %}
+            <div class="faculty-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+
+            <div class="faculty-form-grid">
+
+                <div class="faculty-field">
+                    <label>Employee Number</label>
+                    <input type="text" name="employee_no"
+                           placeholder="Example: EMP006" required>
+                </div>
+
+                <div class="faculty-field">
+                    <label>Faculty Name</label>
+                    <input type="text" name="name"
+                           placeholder="Enter faculty name" required>
+                </div>
+
+                <div class="faculty-field">
+                    <label>Email Address</label>
+                    <input type="email" name="email"
+                           placeholder="Enter email">
+                </div>
+
+                <div class="faculty-field">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone"
+                           placeholder="Enter phone number">
+                </div>
+
+                <div class="faculty-field">
+                    <label>Designation</label>
+                    <select name="designation" required>
+                        <option value="">Select Designation</option>
+                        <option value="Professor">Professor</option>
+                        <option value="Associate Professor">Associate Professor</option>
+                        <option value="Assistant Professor">Assistant Professor</option>
+                        <option value="Lecturer">Lecturer</option>
+                        <option value="HOD">HOD</option>
+                    </select>
+                </div>
+
+                <div class="faculty-field">
+                    <label>Department</label>
+                    <select name="department_id" required>
+                        <option value="">Select Department</option>
+
+                        {% for department in departments %}
+                            <option value="{{ department.department_id }}">
+                                {{ department.department_name }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="faculty-field">
+                    <label>Joining Date</label>
+                    <input type="date" name="joining_date">
+                </div>
+
+            </div>
+
+            <button type="submit" class="faculty-submit">
+                Save Faculty
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+```

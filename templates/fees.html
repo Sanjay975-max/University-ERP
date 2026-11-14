@@ -1,0 +1,324 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fees Management | University ERP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .fees-page {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .fees-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .fees-header h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .fees-header h2 {
+            color: #334155;
+            font-size: 22px;
+        }
+
+        .fees-header p {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .fees-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .fees-actions a {
+            display: inline-block;
+            padding: 11px 17px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .fees-primary-btn {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .fees-primary-btn:hover {
+            background: #4338ca;
+        }
+
+        .fees-secondary-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .fees-secondary-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .fees-table-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+        }
+
+        .fees-table-card h3 {
+            color: #172554;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .fees-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .fees-table {
+            width: 100%;
+            min-width: 1200px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .fees-table th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 15px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .fees-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .fees-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .fee-amount {
+            font-weight: 600;
+            color: #172554;
+        }
+
+        .fee-balance {
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .fee-status {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .fee-status-paid {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .fee-status-partial {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .fee-status-unpaid {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .fees-empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .fees-footer {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .fees-footer a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .fees-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .fees-header h1 {
+                font-size: 25px;
+            }
+
+            .fees-header h2 {
+                font-size: 19px;
+            }
+
+            .fees-table-card {
+                padding: 15px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container fees-page">
+
+        <div class="fees-header">
+            <div>
+                <h1>University ERP</h1>
+                <h2>Fees Management</h2>
+                <p>View and monitor student invoices, payments and outstanding balances.</p>
+            </div>
+
+            <div class="fees-actions">
+                <a href="/record_payment" class="fees-primary-btn">
+                    + Record New Payment
+                </a>
+
+                <a href="/payment_history" class="fees-secondary-btn">
+                    Payment History
+                </a>
+            </div>
+        </div>
+
+        <div class="fees-table-card">
+
+            <h3>Student Fee Records</h3>
+
+            {% if invoices %}
+
+            <div class="fees-table-wrapper">
+
+                <table class="fees-table">
+
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Admission No.</th>
+                            <th>Student Name</th>
+                            <th>Semester</th>
+                            <th>Fee Type</th>
+                            <th>Total Fee</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for invoice in invoices %}
+
+                        <tr>
+                            <td>{{ invoice.invoice_id }}</td>
+
+                            <td>{{ invoice.admission_no }}</td>
+
+                            <td>{{ invoice.student_name }}</td>
+
+                            <td>{{ invoice.semester_number }}</td>
+
+                            <td>{{ invoice.fee_type }}</td>
+
+                            <td class="fee-amount">
+                                ₹{{ "%.2f"|format(invoice.total_amount) }}
+                            </td>
+
+                            <td class="fee-amount">
+                                ₹{{ "%.2f"|format(invoice.amount_paid) }}
+                            </td>
+
+                            <td class="fee-balance">
+                                ₹{{ "%.2f"|format(invoice.balance) }}
+                            </td>
+
+                            <td>{{ invoice.due_date or 'Not Set' }}</td>
+
+                            <td>
+                                {% if invoice.payment_status == 'Paid' %}
+
+                                    <span class="fee-status fee-status-paid">
+                                        Paid
+                                    </span>
+
+                                {% elif invoice.payment_status == 'Partial' %}
+
+                                    <span class="fee-status fee-status-partial">
+                                        Partial
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="fee-status fee-status-unpaid">
+                                        Unpaid
+                                    </span>
+
+                                {% endif %}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="fees-empty-state">
+                No fee records found.
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="fees-footer">
+            <a href="/admin">← Back to Dashboard</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
+```

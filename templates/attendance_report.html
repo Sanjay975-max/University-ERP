@@ -1,0 +1,187 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Report - University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .report-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .report-header h2 {
+            color: #172554;
+            margin: 0;
+        }
+
+        .report-header p {
+            color: #64748b;
+            margin-top: 7px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .attendance-table {
+            width: 100%;
+            min-width: 700px;
+            border-collapse: collapse;
+        }
+
+        .attendance-table th {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 16px;
+            text-align: left;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .attendance-table td {
+            padding: 15px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .attendance-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .percentage {
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .report-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .report-btn {
+            display: inline-block;
+            padding: 11px 20px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .report-btn:hover {
+            background: #3730a3;
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .secondary-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .report-container {
+                margin: 20px 12px;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <div class="report-header">
+            <div>
+                <h1>University ERP</h1>
+                <h2>Student Attendance Report</h2>
+                <p>View student attendance records and percentages.</p>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="attendance-table">
+
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Total Classes</th>
+                        <th>Attended Classes</th>
+                        <th>Attendance Percentage</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for student in attendance_data %}
+                    <tr>
+                        <td>{{ student.student_id }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.total_classes }}</td>
+                        <td>{{ student.attended_classes }}</td>
+                        <td>
+                            <span class="percentage">
+                                {{ student.attendance_percentage }}%
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-message">
+                            No attendance records available.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="report-actions">
+            <a href="/mark_attendance" class="report-btn">
+                Mark Attendance
+            </a>
+
+            <a href="/admin" class="report-btn secondary-btn">
+                Back to Dashboard
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
+```

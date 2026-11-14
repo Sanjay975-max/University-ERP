@@ -1,0 +1,205 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Timetable | University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f4f7fc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .dashboard-container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 35px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            color: #334155;
+            margin: 15px 0 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 28px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #4f46e5;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3730a3;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 22px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-container {
+                margin: 20px 12px;
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <h1>University ERP</h1>
+    <h2>Add New Class Schedule</h2>
+
+    <p class="subtitle">
+        Create a class schedule by selecting the course, semester, faculty and classroom.
+    </p>
+
+    <form method="POST">
+
+        <label>Course</label>
+        <select name="course_id" required>
+            <option value="">Select Course</option>
+
+            {% for course in courses %}
+            <option value="{{ course.course_id }}">
+                {{ course.course_code }} - {{ course.course_name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Semester</label>
+        <select name="semester_id" required>
+            <option value="">Select Semester</option>
+
+            {% for semester in semesters %}
+            <option value="{{ semester.semester_id }}">
+                Semester {{ semester.semester_number }} - {{ semester.academic_year }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Faculty</label>
+        <select name="faculty_id" required>
+            <option value="">Select Faculty</option>
+
+            {% for faculty in faculties %}
+            <option value="{{ faculty.faculty_id }}">
+                {{ faculty.name }} ({{ faculty.employee_no }})
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Classroom</label>
+        <select name="classroom_id">
+            <option value="">Not Assigned</option>
+
+            {% for room in classrooms %}
+            <option value="{{ room.classroom_id }}">
+                {{ room.room_number }} - {{ room.building or '' }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Section</label>
+        <input
+            type="text"
+            name="section"
+            value="A"
+            placeholder="Enter section"
+            required
+        >
+
+        <label>Day</label>
+        <select name="day_of_week">
+            <option value="">Select Day</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+            <option>Sunday</option>
+        </select>
+
+        <label>Start Time</label>
+        <input type="time" name="start_time">
+
+        <label>End Time</label>
+        <input type="time" name="end_time">
+
+        <button type="submit">Save Timetable</button>
+
+    </form>
+
+    <a href="/manage_timetable" class="back-link">
+        ← Back to Timetable
+    </a>
+
+</div>
+
+</body>
+</html>
+```

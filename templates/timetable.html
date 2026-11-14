@@ -1,0 +1,265 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Timetable Management | University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f4f7fc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .dashboard-container {
+            max-width: 1450px;
+            margin: 35px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            color: #334155;
+            margin: 22px 0;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .dashboard-links a {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 9px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .dashboard-links a:last-child {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .dashboard-links a:hover {
+            opacity: 0.88;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1250px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 15px 12px;
+            text-align: left;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #edf0f5;
+            color: #475569;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        .action-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            display: inline-block;
+            padding: 8px 13px;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        .edit-btn:hover {
+            background: #c7d2fe;
+        }
+
+        .empty-state {
+            padding: 35px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-container {
+                margin: 15px 10px;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <h1>University ERP</h1>
+    <h2>Timetable Management</h2>
+
+    <p class="page-subtitle">
+        View and manage class schedules, faculty assignments and classroom details.
+    </p>
+
+    <div class="dashboard-links">
+        <a href="/add_timetable">+ Add New Class Schedule</a>
+        <a href="/admin">← Back to Dashboard</a>
+    </div>
+
+    <h2>Complete Class Timetable</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Offering ID</th>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Academic Year</th>
+                    <th>Faculty</th>
+                    <th>Classroom</th>
+                    <th>Section</th>
+                    <th>Day</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in timetable %}
+                <tr>
+
+                    <td>{{ item.offering_id }}</td>
+
+                    <td>
+                        {{ item.course_code }} - {{ item.course_name }}
+                    </td>
+
+                    <td>{{ item.semester_number }}</td>
+
+                    <td>{{ item.academic_year }}</td>
+
+                    <td>{{ item.faculty_name }}</td>
+
+                    <td>
+                        {% if item.room_number %}
+                            {{ item.room_number }} - {{ item.building or '' }}
+                        {% else %}
+                            Not Assigned
+                        {% endif %}
+                    </td>
+
+                    <td>{{ item.section }}</td>
+
+                    <td>{{ item.day_of_week or 'Not Set' }}</td>
+
+                    <td>{{ item.start_time or 'Not Set' }}</td>
+
+                    <td>{{ item.end_time or 'Not Set' }}</td>
+
+                    <td>
+                        <div class="action-links">
+
+                            <a
+                                href="/edit_timetable/{{ item.offering_id }}"
+                                class="edit-btn">
+                                Edit
+                            </a>
+
+                            <form
+                                action="/delete_timetable/{{ item.offering_id }}"
+                                method="POST"
+                                onsubmit="return confirm('Are you sure you want to delete this schedule?');">
+
+                                <button type="submit" class="delete-btn">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="11" class="empty-state">
+                        No timetable records found. Add a new class schedule to get started.
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+```

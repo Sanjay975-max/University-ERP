@@ -1,0 +1,216 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Timetable | University ERP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f4f7fc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .dashboard-container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 35px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            color: #334155;
+            margin: 15px 0 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 28px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #4f46e5;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3730a3;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 22px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-container {
+                margin: 20px 12px;
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <h1>University ERP</h1>
+    <h2>Edit Class Schedule</h2>
+
+    <p class="subtitle">
+        Update course, semester, faculty and classroom schedule details.
+    </p>
+
+    <form method="POST">
+
+        <label>Course</label>
+        <select name="course_id" required>
+
+            {% for course in courses %}
+            <option value="{{ course.course_id }}"
+                {% if course.course_id == offering.course_id %}selected{% endif %}>
+                {{ course.course_code }} - {{ course.course_name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Semester</label>
+        <select name="semester_id" required>
+
+            {% for semester in semesters %}
+            <option value="{{ semester.semester_id }}"
+                {% if semester.semester_id == offering.semester_id %}selected{% endif %}>
+                Semester {{ semester.semester_number }} - {{ semester.academic_year }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Faculty</label>
+        <select name="faculty_id" required>
+
+            {% for faculty in faculties %}
+            <option value="{{ faculty.faculty_id }}"
+                {% if faculty.faculty_id == offering.faculty_id %}selected{% endif %}>
+                {{ faculty.name }} ({{ faculty.employee_no }})
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Classroom</label>
+        <select name="classroom_id">
+
+            <option value="">Not Assigned</option>
+
+            {% for room in classrooms %}
+            <option value="{{ room.classroom_id }}"
+                {% if room.classroom_id == offering.classroom_id %}selected{% endif %}>
+                {{ room.room_number }} - {{ room.building or '' }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Section</label>
+        <input
+            type="text"
+            name="section"
+            value="{{ offering.section or 'A' }}"
+            required
+        >
+
+        <label>Day</label>
+        <select name="day_of_week">
+
+            <option value="">Select Day</option>
+
+            {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+            <option value="{{ day }}"
+                {% if day == offering.day_of_week %}selected{% endif %}>
+                {{ day }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <label>Start Time</label>
+        <input
+            type="time"
+            name="start_time"
+            value="{{ offering.start_time or '' }}"
+        >
+
+        <label>End Time</label>
+        <input
+            type="time"
+            name="end_time"
+            value="{{ offering.end_time or '' }}"
+        >
+
+        <button type="submit">Update Timetable</button>
+
+    </form>
+
+    <a href="/manage_timetable" class="back-link">
+        ← Back to Timetable
+    </a>
+
+</div>
+
+</body>
+</html>
+```
